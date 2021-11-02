@@ -2,6 +2,7 @@
 *{
     margin: 0px;
     padding: 0px;
+    font-family: sans-serif;
 }
 
 /*--- BOTTOM STYLE ---*/
@@ -20,15 +21,26 @@ main{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgb(111, 111, 116);
-    width: 40%;
-    height: 500px;
+    background-color: rgb(13, 13, 98);
+    width: 25%;
+    height: 450px;
+    border-radius: 50px;
 }
 
 .board{
-    background-color: gainsboro;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    gap: 15px;
+    background-color: rgb(25, 10, 110);
+    border: 1px solid white;
     width: 70%;
-    height: 360px;
+    height: 250px;
+    border-radius: 20px;
+}
+
+.line{
+    gap: 15px;
 }
 
 /*--- SPINNER ---*/
@@ -40,26 +52,25 @@ main{
     align-items: center;
     width: 50%;
     height: 50px;
-    margin-bottom: 2%;
+    margin-bottom: 10%;
 }
 
 .x-turn, .o-turn{
     text-align: center;
     width: 100%;
-    padding-top: 6%;
-    height: 60%;
+    padding-top: 9%;
+    height: 70%;
     border-radius: 20px;
+    font-weight: bolder;
 }
 
-.x-turn{
-    background-color: greenyellow;
-    box-shadow: 0px 0px 20px greenyellow;
-}
-
-.o-turn{
-    background-color: red;
-    box-shadow: 3px 0px 20px red;
-    color: white;
+.selector{
+    position: absolute;
+    left: 43.6%;
+    background-color: rgba(245, 243, 243, 0.404);
+    width: 6%;
+    border-radius: 20px;
+    height: 50px;
 }
 
 /*--- TABLE ---*/
@@ -71,5 +82,16 @@ main{
 
 .cell{
     width: 100%;
-    border: 1px solid black;
+    border: 1px solid white;
+}
+
+.select{
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    color: white;
+}
+
+.select p{
+    font-size: 400%;
 }
