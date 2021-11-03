@@ -1,25 +1,63 @@
-function player(num, symbol) {
-    let player = { num, symbol }
-    return player;
-}
 
-class makeGame {
-    constructor() {
-        let table = [];
-        let line = [];
+class Player {
+    constructor(num, symbol) {
+        num = num;
+        symbol = symbol;
+    }
+    turn = true;
+
+    getPlayer() {
+        return `player ${this.num} con symbol ${this.symbol}`
     }
 
-    newGame() {
-        makeBoard();
-        let arr = document.getElementsByClassName('board')[0].children;
-        for (let element of arr) {
-            let childrens = element.children
-            for (let item of childrens) {
-                item.addEventListener('click', function (player1, player2) {
-                    console.log(this)
-                })
+    checkWin() {
+        let conditions = 0;
+        let board = getBoard();
+        for (let i = 0; i < board.length; i++) {
+            for (let j = 0; j < board.children.length; j++) {
+
             }
         }
+    }
+}
+
+class Game {
+    constructor(board) {
+        board = board;
+    }
+
+    getBoard() {
+        return this.board;
+    }
+
+    //Con esto crearemos el board que guarda este objeto
+    setBoard(num1, num2) {
+        this.board = arr;
+    }
+}
+
+let player1 = new Player();
+let player2 = new Player();
+let game = new Game();
+
+//Coloca los primeros eventos en los botones de seleccion
+let selections = document.getElementsByClassName('selection');
+for (let element of selections) {
+    element.addEventListener('click', selectSymbol);
+}
+function selectSymbol() {
+    if (this.innerText == 'X') {
+        player1.num = 1;
+        player1.symbol = 'X'
+
+        player2.num = 2;
+        player2.symbol = 'O';
+    } else {
+        player1.num = 1;
+        player1.symbol = 'O'
+
+        player2.num = 2;
+        player2.symbol = 'X';
     }
 }
 
@@ -42,9 +80,3 @@ function makeBoard() {
         board.appendChild(makeLine());
     }
 }
-
-let game = new makeGame();
-game.newGame();
-
-const player1 = player(1, "X");
-const player2 = player(2, "O");

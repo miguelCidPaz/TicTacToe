@@ -15,6 +15,38 @@ main{
     width: 100%;
     min-height: 757px;
 }
+
+/*--- WELCOME MODAL ---*/
+.modal-welcome{
+    background-color: rgb(25, 10, 110);
+    width: 30%;
+    height: 200px;
+    border-radius: 50px;
+}
+
+.box-text{
+    margin: auto;
+    margin-top: 20px;
+    padding: 5%;
+    text-align: center;
+    background-color: rgb(137, 138, 202);
+    width: 50%;
+    border-radius: 20px;
+}
+
+.selections{
+    display: flex;
+    justify-content: center;
+    gap: 20%;
+    margin-top: 30px;
+}
+
+.selection{
+    background-color: rgb(137, 138, 202);
+    padding: 20px;
+    border-radius: 20px;
+}
+
 /*--- SECTION BOARD-GAME ---*/
 .board-game{    
     display: flex;
@@ -94,4 +126,9 @@ main{
 
 .select p{
     font-size: 400%;
+}
+
+
+.no-visible{
+    display: none;
 }
