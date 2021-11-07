@@ -20,25 +20,64 @@ class Player {
         //arrPlays servira para marcar la jugada, arrDivs para encontrar los indices
         let arrDivs = game.getBoardDivs();
         let arrPlays = game.getBoard();
+        let width = 0, height = 0;
         let numberLines = document.getElementsByClassName('board')[0].childElementCount;
+        let numberCells = document.getElementsByClassName('line')[0].childElementCount;
+        let lastPlayer = '';
 
         //console.log(arrDivs[0].includes(this));
         for (let i = 0; i < numberLines; i++) {
             if (arrDivs[i].includes(this)) {
-                let numberCell = arrDivs[i].indexOf(this);
-                if (player.turn == true && (arrDivs[i][arrDivs[i].indexOf(this)].innerText != '', undefined, player.rivalSymbol)) {
-                    arrPlays[i][numberCell] = player.symbol;
+                height = i;
+                width = arrDivs[i].indexOf(this);
+                if (player.turn == true && arrPlays[height][width] !== player.rivalSymbol) {
+                    arrPlays[i][width] = player.symbol;
+                    lastPlayer = player.symbol;
                     player.setTurn(false)
-                } else {
-                    arrPlays[i][numberCell] = player.rivalSymbol;
+                } else if (arrPlays[height][width] !== player.symbol) {
+                    console.log(arrPlays[height][width])
+                    arrPlays[i][width] = player.rivalSymbol;
+                    lastPlayer = player.rivalSymbol;
                     player.setTurn(true)
                 }
                 game.setBoard = arrPlays;
-                return true
+                console.log(game.getBoard())
+                player.checkWin(height, width, lastPlayer);
             }
         }
+    }
 
+    //Recibimos los valores para conocer la tirada sin necesidad de volver a localizarla
+    checkWin(height, width, lastPlayer) {
+        const ref = game.getBoard();//Obtiene el tablero de juegos
+        let acc = 0;//Acumulara la cuenta
 
+        //checkThisSide y checkThisDiagonal
+        acc = this.checkThisSide(ref, height, 0, acc, lastPlayer)
+        console.log(acc)
+        if (acc >= game.numberForWin) {
+            console.log(`Win de jugador ${lastPlayer}`)
+        }
+    }
+
+    /**
+     * Recibe el arr de referencia, los numeros para marcar la jugada y el acumulador que devolvera
+     * @param {Array} ref referencia array jugadas
+     * @param {Number} height posicion
+     * @param {Number} width posicion
+     * @param {Number} acc acumulador
+     * @param {String} lastPlayer Simbolo del ultimo jugador
+     */
+    checkThisSide(ref, height, width, acc, lastPlayer) {
+        if (ref[height][width] !== lastPlayer) {
+            if (acc >= game.getNumber()) {
+                return acc
+            } else {
+                return 0;
+            }
+        } else {
+            return this.checkThisSide(ref, height, width++, acc++, lastPlayer)
+        }
     }
 
 }
@@ -48,6 +87,11 @@ class Game {
         board = board;
     }
     boardDivs = [];
+    numberForWin = 3;
+
+    getNumber() {
+        return this.numberForWin
+    }
 
     getBoard() {
         return this.board;
@@ -100,6 +144,7 @@ let selections = document.getElementsByClassName('selection');
 for (let element of selections) {
     element.addEventListener('click', selectSymbol);
 }
+
 function selectSymbol() {
     if (this.innerText == 'X') {
         player.num = 1;
