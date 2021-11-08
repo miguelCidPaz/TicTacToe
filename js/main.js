@@ -39,8 +39,11 @@ class Player {
                     lastPlayer = player.rivalSymbol;
                     player.setTurn(true)
                 }
+
+                game.selectorDance(lastPlayer)
                 game.setBoard = arrPlays;
                 console.log(game.getBoard())
+                player.drawPlayer(lastPlayer, this);
                 player.checkWin(height, width, lastPlayer);
             }
         }
@@ -154,6 +157,15 @@ class Player {
         }
     }
 
+    drawPlayer(playerSymbol, label) {
+        let movement = document.createElement('div');
+        let symbolPlayer = document.createElement('p');
+        symbolPlayer.innerHTML = playerSymbol;
+        movement.appendChild(symbolPlayer);
+        movement.classList.add('player');
+        label.appendChild(movement);
+    }
+
 }
 
 class Game {
@@ -205,6 +217,31 @@ class Game {
     newGame() {
         makeBoard();
         this.setBoard()
+        this.selectorPosition(player.symbol);
+    }
+
+    selectorPosition(symbol) {
+        let position = document.getElementById('position');
+        if (symbol === 'X') {
+            position.classList.add('to-right');
+        } else {
+            position.classList.add('to-left');
+        }
+    }
+
+    selectorDance(symbol) {
+        let position = document.getElementById('position');
+        if (symbol === 'X') {
+            if (position.classList.contains('to-right')) {
+                position.classList.remove('to-right')
+            }
+            position.classList.add('to-left');
+        } else {
+            if (position.classList.contains('to-left')) {
+                position.classList.remove('to-left')
+            }
+            position.classList.add('to-right');
+        }
     }
 }
 
