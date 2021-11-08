@@ -22,7 +22,6 @@ class Player {
         let arrPlays = game.getBoard();
         let width = 0, height = 0;
         let numberLines = document.getElementsByClassName('board')[0].childElementCount;
-        let numberCells = document.getElementsByClassName('line')[0].childElementCount;
         let lastPlayer = '';
 
         //console.log(arrDivs[0].includes(this));
@@ -51,12 +50,32 @@ class Player {
     checkWin(height, width, lastPlayer) {
         const ref = game.getBoard();//Obtiene el tablero de juegos
         let acc = 0;//Acumulara la cuenta
+        let acc1 = 0, acc2 = 0, acc3 = 0, acc4 = 0;
 
-        //checkThisSide y checkThisDiagonal
-        acc = this.checkThisSide(ref, height, 0, acc, lastPlayer)
-        console.log(acc)
-        if (acc >= game.numberForWin) {
-            console.log(`Win de jugador ${lastPlayer}`)
+        //Revisamos lateralmente
+        acc1 = this.checkThisSide(ref, height, width, acc, lastPlayer, 0)
+        acc2 = this.checkThisSide(ref, height, width, acc, lastPlayer, 1)
+        this.checkThis(acc1, acc2) ? console.log('Gana player ' + lastPlayer) : '';
+
+        //Revisamos verticalmente
+        acc1 = this.checkThisTop(ref, height, width, acc, lastPlayer, 0);
+        acc2 = this.checkThisTop(ref, height, width, acc, lastPlayer, 1);
+        this.checkThis(acc1, acc2) ? console.log('Gana player ' + lastPlayer) : '';
+
+        //Revisamos las diagonales de la jugada
+        acc1 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 0);
+        acc2 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 1);
+        acc3 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 2);
+        acc4 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 3);
+        this.checkThis(acc1, acc2) ? console.log('Gana player ' + lastPlayer) : '';
+        this.checkThis(acc3, acc4) ? console.log('Gana player ' + lastPlayer) : '';
+    }
+
+    checkThis(n1, n2) {
+        if (n1 + n2 > game.getNumber()) {
+            return true
+        } else {
+            return false
         }
     }
 
@@ -67,16 +86,71 @@ class Player {
      * @param {Number} width posicion
      * @param {Number} acc acumulador
      * @param {String} lastPlayer Simbolo del ultimo jugador
+     * @param {Number} option
      */
-    checkThisSide(ref, height, width, acc, lastPlayer) {
-        if (ref[height][width] !== lastPlayer) {
-            if (acc >= game.getNumber()) {
-                return acc
-            } else {
-                return 0;
-            }
+    checkThisSide(ref, height, width, acc, lastPlayer, option) {
+        let referrer = ref[height][width]
+
+        if (option == 0 && referrer === lastPlayer) {
+            width++;
+            acc++;
+            return this.checkThisSide(ref, height, width, acc, lastPlayer, option)
+        } else if (option == 1 && referrer === lastPlayer) {
+            width--;
+            acc++;
+            return this.checkThisSide(ref, height, width, acc, lastPlayer, option)
         } else {
-            return this.checkThisSide(ref, height, width++, acc++, lastPlayer)
+            return acc;
+        }
+    }
+
+    checkThisTop(ref, height, width, acc, lastPlayer, option) {
+        if (ref[height] === undefined) {
+            return acc;
+        }
+
+        let referrer = ref[height][width]
+        if (option == 0 && referrer === lastPlayer) {
+            height++;
+            acc++;
+            return this.checkThisTop(ref, height, width, acc, lastPlayer, option)
+        } else if (option == 1 && referrer === lastPlayer) {
+            height--;
+            acc++;
+            return this.checkThisTop(ref, height, width, acc, lastPlayer, option)
+        } else {
+            return acc;
+        }
+    }
+
+    checkThisDiagonal(ref, height, width, acc, lastPlayer, option) {
+        if (ref[height] === undefined) {
+            return acc;
+        }
+
+        let referrer = ref[height][width]
+        if (option == 0 && referrer === lastPlayer) {
+            height++;
+            width++;
+            acc++;
+            return this.checkThisDiagonal(ref, height, width, acc, lastPlayer, option)
+        } else if (option == 1 && referrer === lastPlayer) {
+            height--;
+            width--;
+            acc++;
+            return this.checkThisDiagonal(ref, height, width, acc, lastPlayer, option)
+        } else if (option == 2 && referrer === lastPlayer) {
+            height++;
+            width--;
+            acc++;
+            return this.checkThisDiagonal(ref, height, width, acc, lastPlayer, option)
+        } else if (option == 3 && referrer === lastPlayer) {
+            height--;
+            width++;
+            acc++;
+            return this.checkThisDiagonal(ref, height, width, acc, lastPlayer, option)
+        } else {
+            return acc;
         }
     }
 
@@ -113,7 +187,6 @@ class Game {
             let father = document.getElementsByClassName('line');
             for (let j = 0; j < width; j++) {
                 line.push(0);
-                console.log(j)
                 line2.push(father[i].children[j]);
             }
             arr.push(line);
