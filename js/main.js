@@ -1,15 +1,10 @@
 
 class Player {
-    constructor(num, symbol, rivalSymbol) {
-        num = num;
+    constructor(symbol, rivalSymbol) {
         symbol = symbol;
         rivalSymbol = rivalSymbol;
     }
     turn = true;
-
-    getPlayer() {
-        return `player ${this.num} con symbol ${this.symbol}`
-    }
 
     setTurn(turn) {
         this.turn = turn;
@@ -29,21 +24,24 @@ class Player {
             if (arrDivs[i].includes(this)) {
                 height = i;
                 width = arrDivs[i].indexOf(this);
-                if (player.turn == true && arrPlays[height][width] !== player.rivalSymbol) {
+                if (player.turn == true && arrPlays[height][width] == 0) {
                     arrPlays[i][width] = player.symbol;
                     lastPlayer = player.symbol;
+                    player.drawPlayer(lastPlayer, this);
                     player.setTurn(false)
-                } else if (arrPlays[height][width] !== player.symbol) {
+                    game.selectorDance(lastPlayer)
+                } else if (arrPlays[height][width] !== player.symbol && arrPlays[height][width] !== player.rivalSymbol) {
                     console.log(arrPlays[height][width])
                     arrPlays[i][width] = player.rivalSymbol;
                     lastPlayer = player.rivalSymbol;
+                    player.drawPlayer(lastPlayer, this);
                     player.setTurn(true)
+                    game.selectorDance(lastPlayer)
                 }
 
-                game.selectorDance(lastPlayer)
+
                 game.setBoard = arrPlays;
                 console.log(game.getBoard())
-                player.drawPlayer(lastPlayer, this);
                 player.checkWin(height, width, lastPlayer);
             }
         }
@@ -257,11 +255,9 @@ for (let element of selections) {
 
 function selectSymbol() {
     if (this.innerText == 'X') {
-        player.num = 1;
         player.symbol = 'X';
         player.rivalSymbol = 'O';
     } else {
-        player.num = 1;
         player.symbol = 'O';
         player.rivalSymbol = 'X';
     }
