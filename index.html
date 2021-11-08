@@ -14,7 +14,7 @@
     <main>
 
         <!--Select Symbol player-->
-        <section class="modal-welcome">
+        <section class="modal-welcome" id="panel-welcome">
             <div class="box-text">
                 <p class="welcome">Choose Symbol</p>
             </div>
@@ -26,13 +26,25 @@
 
 
         <!--Game Section-->
-        <section class="board-game no-visible">
+        <section class="board-game no-visible" id="panel">
             <div class="spinner-bottom">
                 <div class="selector" id="position"></div>
                 <div class="x-turn">X-TURN</div>
                 <div class="o-turn">O-TURN</div>
             </div>
-            <div class="board">
+            <div class="board" id="panel-game">
+            </div>
+        </section>
+
+
+        <!--Win section-->
+        <section class="win no-visible" id="panel-win">
+            <div class="textForVictory">
+                <p class="default">Gana el jugador</p>
+                <p class="player-win" id="winner">O</p>
+            </div>
+            <div class="button-retry" id="retry">
+                Retry
             </div>
         </section>
     </main>

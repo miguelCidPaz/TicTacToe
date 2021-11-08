@@ -19,7 +19,6 @@ class Player {
         let numberLines = document.getElementsByClassName('board')[0].childElementCount;
         let lastPlayer = '';
 
-        //console.log(arrDivs[0].includes(this));
         for (let i = 0; i < numberLines; i++) {
             if (arrDivs[i].includes(this)) {
                 height = i;
@@ -30,18 +29,14 @@ class Player {
                     player.drawPlayer(lastPlayer, this);
                     player.setTurn(false)
                     game.selectorDance(lastPlayer)
-                } else if (arrPlays[height][width] !== player.symbol && arrPlays[height][width] !== player.rivalSymbol) {
-                    console.log(arrPlays[height][width])
+                } else if (arrPlays[height][width] == 0) {
                     arrPlays[i][width] = player.rivalSymbol;
                     lastPlayer = player.rivalSymbol;
                     player.drawPlayer(lastPlayer, this);
                     player.setTurn(true)
                     game.selectorDance(lastPlayer)
                 }
-
-
-                game.setBoard = arrPlays;
-                console.log(game.getBoard())
+                game.setBoard(arrPlays);
                 player.checkWin(height, width, lastPlayer);
             }
         }
@@ -56,20 +51,20 @@ class Player {
         //Revisamos lateralmente
         acc1 = this.checkThisSide(ref, height, width, acc, lastPlayer, 0)
         acc2 = this.checkThisSide(ref, height, width, acc, lastPlayer, 1)
-        this.checkThis(acc1, acc2) ? console.log('Gana player ' + lastPlayer) : '';
+        this.checkThis(acc1, acc2) ? game.reportVictory(lastPlayer) : '';
 
         //Revisamos verticalmente
         acc1 = this.checkThisTop(ref, height, width, acc, lastPlayer, 0);
         acc2 = this.checkThisTop(ref, height, width, acc, lastPlayer, 1);
-        this.checkThis(acc1, acc2) ? console.log('Gana player ' + lastPlayer) : '';
+        this.checkThis(acc1, acc2) ? game.reportVictory(lastPlayer) : '';
 
         //Revisamos las diagonales de la jugada
         acc1 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 0);
         acc2 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 1);
         acc3 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 2);
         acc4 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 3);
-        this.checkThis(acc1, acc2) ? console.log('Gana player ' + lastPlayer) : '';
-        this.checkThis(acc3, acc4) ? console.log('Gana player ' + lastPlayer) : '';
+        this.checkThis(acc1, acc2) ? game.reportVictory(lastPlayer) : '';
+        this.checkThis(acc3, acc4) ? game.reportVictory(lastPlayer) : '';
     }
 
     checkThis(n1, n2) {
@@ -80,15 +75,6 @@ class Player {
         }
     }
 
-    /**
-     * Recibe el arr de referencia, los numeros para marcar la jugada y el acumulador que devolvera
-     * @param {Array} ref referencia array jugadas
-     * @param {Number} height posicion
-     * @param {Number} width posicion
-     * @param {Number} acc acumulador
-     * @param {String} lastPlayer Simbolo del ultimo jugador
-     * @param {Number} option
-     */
     checkThisSide(ref, height, width, acc, lastPlayer, option) {
         let referrer = ref[height][width]
 
@@ -167,9 +153,7 @@ class Player {
 }
 
 class Game {
-    constructor(board) {
-        board = board;
-    }
+    board = [];
     boardDivs = [];
     numberForWin = 3;
 
@@ -180,9 +164,20 @@ class Game {
     getBoard() {
         return this.board;
     }
+    setBoard(board) {
+        this.board = board
+    }
+
+    getBoardDivs() {
+        return this.boardDivs;
+    }
+
+    setBoardDivs(boardDivs) {
+        this.boardDivs = boardDivs;
+    }
 
     //Con esto crearemos el board que guarda este objeto
-    setBoard() {
+    setBoards() {
         let height = document.getElementsByClassName('board')[0].childElementCount;
         let width = document.getElementsByClassName('line')[0].childElementCount;
 
@@ -208,14 +203,13 @@ class Game {
     }
 
 
-    getBoardDivs() {
-        return this.boardDivs;
-    }
-
     newGame() {
-        makeBoard();
-        this.setBoard()
+        this.board = [];
+        this.boardDivs = [];
+        this.removeAll();
+        this.makeBoard();
         this.selectorPosition(player.symbol);
+        this.setBoards();
     }
 
     selectorPosition(symbol) {
@@ -241,6 +235,72 @@ class Game {
             position.classList.add('to-right');
         }
     }
+
+    reportVictory(symbol) {
+        let board = document.getElementById('panel')
+        let boardWin = document.getElementById('panel-win');
+        let winner = document.getElementById('winner')
+        let button = document.getElementById('retry')
+        board.classList.add('no-visible');
+        winner.innerHTML = symbol;
+        boardWin.classList.remove('no-visible');
+        button.addEventListener('click', this.retryGame)
+    }
+
+    retryGame() {
+        let boardWin = document.getElementById('panel-win')
+        let boardWelcome = document.getElementById('panel-welcome')
+        boardWin.classList.add('no-visible');
+        boardWelcome.classList.remove('no-visible');
+        let selections = document.getElementsByClassName('selection');
+        for (let element of selections) {
+            element.addEventListener('click', this.selectSymbol);
+        }
+        game.newGame();
+    }
+
+    removeAll() {
+        let board = document.getElementById('panel-game');
+        while (board.firstChild) {
+            board.removeChild(board.firstChild);
+        }
+    }
+
+    //Crea una linea
+    makeLine() {
+        let number = 3;
+        let line = document.createElement('div')
+        line.classList = 'line'
+        for (let i = 0; i < number; i++) {
+            let cell = document.createElement('div')
+            cell.classList = 'cell'
+            cell.addEventListener('click', player.takeCell);
+            line.appendChild(cell);
+        }
+        return line;
+    }
+
+    //Junta las lineas para formar el 3 en raya
+    makeBoard() {
+        let number = 3;
+        let board = document.getElementsByClassName('board')[0];
+        for (let i = 0; i < number; i++) {
+            board.appendChild(this.makeLine());
+        }
+    }
+
+    selectSymbol() {
+        if (this.innerText == 'X') {
+            player.symbol = 'X';
+            player.rivalSymbol = 'O';
+        } else {
+            player.symbol = 'O';
+            player.rivalSymbol = 'X';
+        }
+
+        nextPage();
+        game.newGame();
+    }
 }
 
 //Deberian moverse y almacenarse en algun objeto, por lo menos el player
@@ -250,20 +310,7 @@ let game = new Game();
 //Coloca los primeros eventos en los botones de seleccion
 let selections = document.getElementsByClassName('selection');
 for (let element of selections) {
-    element.addEventListener('click', selectSymbol);
-}
-
-function selectSymbol() {
-    if (this.innerText == 'X') {
-        player.symbol = 'X';
-        player.rivalSymbol = 'O';
-    } else {
-        player.symbol = 'O';
-        player.rivalSymbol = 'X';
-    }
-
-    nextPage();
-    game.newGame();
+    element.addEventListener('click', game.selectSymbol);
 }
 
 //Pasa pagina, debera modificarse conforme se añadan ventanas
@@ -272,27 +319,4 @@ function nextPage() {
     let board = document.getElementsByClassName('board-game')[0];
     welcome.classList.add('no-visible');
     board.classList.remove('no-visible');
-}
-
-//Crea una linea
-function makeLine() {
-    let number = 3;
-    let line = document.createElement('div')
-    line.classList = 'line'
-    for (let i = 0; i < number; i++) {
-        let cell = document.createElement('div')
-        cell.classList = 'cell'
-        cell.addEventListener('click', player.takeCell);
-        line.appendChild(cell);
-    }
-    return line;
-}
-
-//Junta las lineas para formar el 3 en raya
-function makeBoard() {
-    let number = 3;
-    let board = document.getElementsByClassName('board')[0];
-    for (let i = 0; i < number; i++) {
-        board.appendChild(makeLine());
-    }
 }
