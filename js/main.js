@@ -52,9 +52,9 @@ class Player {
                 }
                 game.setBoard(arrPlays);
                 player.checkWin(arrPlays, height, width, lastPlayer);
-                arrPlays = player.checkBoard(arrPlays);
             }
         }
+        arrPlays = player.checkBoard(arrPlays);
     }
 
     //Comprobamos si el tablero esta completo
@@ -244,6 +244,7 @@ class Game {
         this.makeBoard();
         this.selectorPosition(player.getSymbol());
         this.setBoards();
+        player.setTurn(true)
     }
 
     selectorPosition(symbol) {
