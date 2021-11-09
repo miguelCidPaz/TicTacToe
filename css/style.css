@@ -178,8 +178,9 @@ main{
 
 .cell{
     width: 100%;
-    box-shadow:  -2px -2px 5px inset rgb(57, 57, 80), 
-    -2px -2px 5px rgb(0, 0, 0);
+    box-shadow:  -2px -2px 2px inset rgb(22, 22, 27), 
+    -2px -2px 5px rgb(0, 0, 0),
+    2px 2px 2px rgb(69, 69, 80);
 }
 
 .select{
@@ -210,8 +211,8 @@ main{
 }
 
 @keyframes takeCell {
-    0%{font-size: 0px;}
-    100%{font-size: 45px;}
+    0%{font-size: 0px; transform: rotate(0deg);}
+    100%{font-size: 45px;transform: rotate(180deg);}
 }
 
 /* WINDOW FOR VICTORY */
@@ -239,25 +240,37 @@ main{
     margin-bottom: 20px;
 }
 
+.container-win{
+    margin-top: 30px;
+    box-shadow:  -2px -2px 2px inset rgb(22, 22, 27), 
+    -2px -2px 5px rgb(0, 0, 0),
+    2px 2px 2px rgb(69, 69, 80);
+}
+
 .player-win{
     margin-top: 10px;
     font-family: mark;
     color: turquoise;
-    box-shadow:  -2px -2px 5px inset rgb(57, 57, 80), 
-    -2px -2px 5px rgb(0, 0, 0);
     margin-top: 5px;
     font-size: 100px;
+    animation: text-to-win 0.3s;
+}
+
+@keyframes text-to-win {
+    0%{transform: rotate(0deg);}
+    100%{transform: rotate(180deg);}
 }
 
 .button-retry{
     width: 50%;
     text-align: center;
     margin: auto;
-    margin-top: 20px;
+    margin-top: 40px;
     font-size: 40px;
     color: white;
-    box-shadow:  2px 2px 5px inset rgb(57, 57, 80), 
-    2px 2px 5px rgb(0, 0, 0);
+    box-shadow:  -2px -2px 2px inset rgb(22, 22, 27), 
+    -2px -2px 5px rgb(0, 0, 0),
+    2px 2px 2px rgb(69, 69, 80);
     border-radius: 20px;
     transition-duration: 1s;
 }

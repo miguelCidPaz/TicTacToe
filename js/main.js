@@ -242,25 +242,34 @@ class Game {
     newGame() {
         this.removeAll();
         this.makeBoard();
-        this.selectorDance(player.getSymbol());
+        this.selectorDance(player.getSymbol(), 1);
         this.setBoards();
         player.setTurn(true)
     }
 
-    selectorDance(symbol) {
+    selectorDance(symbol, option=0) {
         let position = document.getElementById('position');
         if (symbol === 'X') {
-            if (position.classList.contains('to-right')) {
-                position.classList.remove('to-right')
-            }
-            position.classList.add('to-left');
-        } else {
-            if (position.classList.contains('to-left')) {
-                position.classList.remove('to-left')
-            }
-            position.classList.add('to-right');
+        if (position.classList.contains('to-left')) {
+            position.classList.remove('to-left')
         }
+            if(option == 0){
+                position.classList.add('to-right')
+            }else{
+                position.classList.add('to-left');
+            }
+
+        } else {
+        if (position.classList.contains('to-right')) {
+            position.classList.remove('to-right')
+        }
+            if(option == 0){
+                position.classList.add('to-left');
+            }else{
+                position.classList.add('to-right')
+            }
     }
+}
 
     reportVictory(symbol) {
         let board = document.getElementById('panel')
