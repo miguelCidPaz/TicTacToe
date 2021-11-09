@@ -3,25 +3,34 @@ class Player {
     turn = true;
     symbol = '';
     rivalSymbol = '';
+    autopilot = true;
 
-    getSymbol(){
+    getSymbol() {
         return this.symbol;
     }
 
-    setSymbol(symbol){
+    setSymbol(symbol) {
         this.symbol = symbol;
     }
 
-    getRivalSymbol(){
+    getRivalSymbol() {
         return this.rivalSymbol;
     }
 
-    setRivalSymbol(rivalSymbol){
+    setRivalSymbol(rivalSymbol) {
         this.rivalSymbol = rivalSymbol;
     }
 
     setTurn(turn) {
         this.turn = turn;
+    }
+
+    getAutopilot() {
+        return this.autopilot;
+    }
+
+    setAutopilot(autopilot) {
+        this.autopilot = autopilot;
     }
 
     takeCell() {
@@ -38,17 +47,17 @@ class Player {
                 height = i;
                 width = arrDivs[i].indexOf(this);
                 if (player.turn == true && arrPlays[height][width] == 0) {
-                    arrPlays[i][width] = player.getSymbol();
                     lastPlayer = player.getSymbol();
-                    player.drawPlayer(lastPlayer, this);
-                    player.setTurn(false)
-                    game.selectorDance(lastPlayer)
+                    arrPlays = player.movementPlayer(arrPlays, height, width, this, lastPlayer, false)
+                    if (player.getAutopilot) {
+                        setTimeout(() => {
+                            arrPlays = player.movementIA(arrPlays);
+                        }, 200);
+                        player.checkWin(arrPlays, height, width, player.getRivalSymbol());
+                    }
                 } else if (arrPlays[height][width] == 0) {
-                    arrPlays[i][width] = player.getRivalSymbol();
                     lastPlayer = player.getRivalSymbol();
-                    player.drawPlayer(lastPlayer, this);
-                    player.setTurn(true)
-                    game.selectorDance(lastPlayer)
+                    arrPlays = player.movementPlayer(arrPlays, height, width, this, lastPlayer, true)
                 }
                 game.setBoard(arrPlays);
                 player.checkWin(arrPlays, height, width, lastPlayer);
@@ -57,17 +66,61 @@ class Player {
         arrPlays = player.checkBoard(arrPlays);
     }
 
+    movementPlayer(arrPlays, height, width, label, actualPlayer, turn) {
+        arrPlays[height][width] = actualPlayer;
+        player.drawPlayer(actualPlayer, label);
+        player.setTurn(turn)
+        game.selectorDance(actualPlayer)
+        return arrPlays;
+    }
+
+    //Tenemos que comprobar en que posicion coloco el jugador -> ArrPlays[height][width]
+    //Recorrer las casillas circundantes a la ultima jugada -> Usaremos la busqueda que usamos para checkwin
+    //Si solo tenemos 1 simbolo rival cerca, colocaremos aleatoriamente -> acc = 1 random
+    //Si tenemos 2 simbolos colocaremos la marca para detener la jugada  -> acc = 2 colocamos primer 0
+    movementIA(arrPlays) {
+        let condition = 0, count = 0;
+        let IA = player.getRivalSymbol();
+        let numHeight = document.getElementById('panel-game').childElementCount;
+        let numWidth = document.getElementsByClassName('line')[0].childElementCount;
+        let cell = game.getBoardDivs();
+        arrPlays = player.checkBoard(arrPlays);
+
+        while (condition == 0) {
+            console.log('calculando...')
+            let height = Math.floor(Math.random() * numHeight);
+            let width = Math.floor(Math.random() * numWidth);
+            if (arrPlays[height][width] == player.getSymbol() || count > 30) {
+                if (arrPlays[height][width + 1] !== undefined && arrPlays[height][width + 1] == 0) {
+                    cell = cell[height][width + 1];
+                    arrPlays = player.movementPlayer(arrPlays, height, width + 1, cell, IA, true)
+                    condition++;
+                    break;
+                } else if (arrPlays[height + 1] !== undefined) {
+                    if (arrPlays[height + 1][width] !== undefined && arrPlays[height + 1][width] == 0) {
+                        cell = cell[height + 1][width];
+                        arrPlays = player.movementPlayer(arrPlays, height + 1, width, cell, IA, true)
+                        condition++;
+                        break;
+                    }
+                }
+            }
+            count++
+        }
+        return arrPlays
+    }
+
     //Comprobamos si el tablero esta completo
-    checkBoard(arrPlays){
+    checkBoard(arrPlays) {
         let check = true;
-        for(let i = 0 ; i < arrPlays.length ; i++){
-            if(arrPlays[i].includes(0)){
+        for (let i = 0; i < arrPlays.length; i++) {
+            if (arrPlays[i].includes(0)) {
                 check = false;
             }
         }
-        if(check){
-            for(let i = 0 ; i < arrPlays.length ; i++){
-                for(let j = 0 ; j < arrPlays[i].length ; j++){
+        if (check) {
+            for (let i = 0; i < arrPlays.length; i++) {
+                for (let j = 0; j < arrPlays[i].length; j++) {
                     arrPlays[i][j] = 0;
                 }
             }
@@ -247,29 +300,29 @@ class Game {
         player.setTurn(true)
     }
 
-    selectorDance(symbol, option=0) {
+    selectorDance(symbol, option = 0) {
         let position = document.getElementById('position');
         if (symbol === 'X') {
-        if (position.classList.contains('to-left')) {
-            position.classList.remove('to-left')
-        }
-            if(option == 0){
+            if (position.classList.contains('to-left')) {
+                position.classList.remove('to-left')
+            }
+            if (option == 0) {
                 position.classList.add('to-right')
-            }else{
+            } else {
                 position.classList.add('to-left');
             }
 
         } else {
-        if (position.classList.contains('to-right')) {
-            position.classList.remove('to-right')
-        }
-            if(option == 0){
+            if (position.classList.contains('to-right')) {
+                position.classList.remove('to-right')
+            }
+            if (option == 0) {
                 position.classList.add('to-left');
-            }else{
+            } else {
                 position.classList.add('to-right')
             }
+        }
     }
-}
 
     reportVictory(symbol) {
         let board = document.getElementById('panel')
