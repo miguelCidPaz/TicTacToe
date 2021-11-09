@@ -1,10 +1,24 @@
 
 class Player {
-    constructor(symbol, rivalSymbol) {
-        symbol = symbol;
-        rivalSymbol = rivalSymbol;
-    }
     turn = true;
+    symbol = '';
+    rivalSymbol = '';
+
+    getSymbol(){
+        return this.symbol;
+    }
+
+    setSymbol(symbol){
+        this.symbol = symbol;
+    }
+
+    getRivalSymbol(){
+        return this.rivalSymbol;
+    }
+
+    setRivalSymbol(rivalSymbol){
+        this.rivalSymbol = rivalSymbol;
+    }
 
     setTurn(turn) {
         this.turn = turn;
@@ -17,34 +31,55 @@ class Player {
         let arrPlays = game.getBoard();
         let width = 0, height = 0;
         let numberLines = document.getElementsByClassName('board')[0].childElementCount;
-        let lastPlayer = '';
+        let lastPlayer = player.getSymbol();
 
         for (let i = 0; i < numberLines; i++) {
             if (arrDivs[i].includes(this)) {
                 height = i;
                 width = arrDivs[i].indexOf(this);
                 if (player.turn == true && arrPlays[height][width] == 0) {
-                    arrPlays[i][width] = player.symbol;
-                    lastPlayer = player.symbol;
+                    arrPlays[i][width] = player.getSymbol();
+                    lastPlayer = player.getSymbol();
                     player.drawPlayer(lastPlayer, this);
                     player.setTurn(false)
                     game.selectorDance(lastPlayer)
                 } else if (arrPlays[height][width] == 0) {
-                    arrPlays[i][width] = player.rivalSymbol;
-                    lastPlayer = player.rivalSymbol;
+                    arrPlays[i][width] = player.getRivalSymbol();
+                    lastPlayer = player.getRivalSymbol();
                     player.drawPlayer(lastPlayer, this);
                     player.setTurn(true)
                     game.selectorDance(lastPlayer)
                 }
                 game.setBoard(arrPlays);
-                player.checkWin(height, width, lastPlayer);
+                player.checkWin(arrPlays, height, width, lastPlayer);
+                arrPlays = player.checkBoard(arrPlays);
             }
         }
     }
 
+    //Comprobamos si el tablero esta completo
+    checkBoard(arrPlays){
+        let check = true;
+        for(let i = 0 ; i < arrPlays.length ; i++){
+            if(arrPlays[i].includes(0)){
+                check = false;
+            }
+        }
+        if(check){
+            for(let i = 0 ; i < arrPlays.length ; i++){
+                for(let j = 0 ; j < arrPlays[i].length ; j++){
+                    arrPlays[i][j] = 0;
+                }
+            }
+            game.newGame();
+            return arrPlays;
+        }
+        return arrPlays;
+    }
+
     //Recibimos los valores para conocer la tirada sin necesidad de volver a localizarla
-    checkWin(height, width, lastPlayer) {
-        const ref = game.getBoard();//Obtiene el tablero de juegos
+    checkWin(arrPlays, height, width, lastPlayer) {
+        const ref = arrPlays;//Obtiene el tablero de juegos
         let acc = 0;//Acumulara la cuenta
         let acc1 = 0, acc2 = 0, acc3 = 0, acc4 = 0;
 
@@ -164,6 +199,7 @@ class Game {
     getBoard() {
         return this.board;
     }
+
     setBoard(board) {
         this.board = board
     }
@@ -198,17 +234,15 @@ class Game {
             arr2.push(line2);
             line = [], line2 = [];
         }
-        this.boardDivs = arr2;
-        this.board = arr;
+        this.setBoard(arr);
+        this.setBoardDivs(arr2);
     }
 
 
     newGame() {
-        this.board = [];
-        this.boardDivs = [];
         this.removeAll();
         this.makeBoard();
-        this.selectorPosition(player.symbol);
+        this.selectorPosition(player.getSymbol());
         this.setBoards();
     }
 
@@ -252,11 +286,6 @@ class Game {
         let boardWelcome = document.getElementById('panel-welcome')
         boardWin.classList.add('no-visible');
         boardWelcome.classList.remove('no-visible');
-        let selections = document.getElementsByClassName('selection');
-        for (let element of selections) {
-            element.addEventListener('click', this.selectSymbol);
-        }
-        game.newGame();
     }
 
     removeAll() {
@@ -291,11 +320,11 @@ class Game {
 
     selectSymbol() {
         if (this.innerText == 'X') {
-            player.symbol = 'X';
-            player.rivalSymbol = 'O';
+            player.setSymbol('X');
+            player.setRivalSymbol('O');
         } else {
-            player.symbol = 'O';
-            player.rivalSymbol = 'X';
+            player.setSymbol('O');
+            player.setRivalSymbol('X');
         }
 
         nextPage();
@@ -308,7 +337,7 @@ let player = new Player();
 let game = new Game();
 
 //Coloca los primeros eventos en los botones de seleccion
-let selections = document.getElementsByClassName('selection');
+const selections = document.getElementsByClassName('selection');
 for (let element of selections) {
     element.addEventListener('click', game.selectSymbol);
 }
