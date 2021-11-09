@@ -242,18 +242,9 @@ class Game {
     newGame() {
         this.removeAll();
         this.makeBoard();
-        this.selectorPosition(player.getSymbol());
+        this.selectorDance(player.getSymbol());
         this.setBoards();
         player.setTurn(true)
-    }
-
-    selectorPosition(symbol) {
-        let position = document.getElementById('position');
-        if (symbol === 'X') {
-            position.classList.add('to-right');
-        } else {
-            position.classList.add('to-left');
-        }
     }
 
     selectorDance(symbol) {

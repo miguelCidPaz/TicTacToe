@@ -141,18 +141,18 @@ main{
 }
 
 .to-right{
-    left:42.3%;
+    left: 49.7%;
     animation: toRight 0.1s;
 }
 
 .to-left{
-    left: 49.7%;
+    left:42.3%;
     animation: toLeft 0.1s;
 }
 
 
 
-@keyframes toLeft {
+@keyframes toRight {
     0%{
         left: 43.8%;
     }
@@ -160,7 +160,7 @@ main{
         left: 49.7%;
     }
 }
-@keyframes toRight {
+@keyframes toLeft {
     0%{
         left: 49.7%;
     }
