@@ -5,23 +5,41 @@
     font-family: sans-serif;
 }
 
+/*--- FONT ---*/
+@font-face {
+    font-family: mark;
+    src: url("../res/ArchitectsDaughter-Regular.ttf");
+  }
+
 /*--- BOTTOM STYLE ---*/
 main{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgb(172, 169, 169);
+    background-color: rgb(41, 40, 40);
     width: 100%;
     min-height: 757px;
 }
 
 /*--- WELCOME MODAL ---*/
 .modal-welcome{
-    background-color: rgb(25, 10, 110);
-    width: 30%;
-    height: 200px;
-    border-radius: 50px;
+    box-shadow:  0px 0px 5px inset rgb(62, 62, 97),
+    0px 0px 3px black;
+    color: white;
+    background-color: rgb(33, 33, 52);
+    width: 500px;
+    height: 220px;
+    border-radius: 20px;
+}
+
+.separator{
+    width: 90%;
+    height: 3px;
+    background-color: rgb(33, 33, 52);
+    box-shadow:  0px 0px 50px inset rgb(62, 62, 97);
+    margin-top: 5px;
+    margin-bottom: 10px;
 }
 
 .box-text{
@@ -29,7 +47,6 @@ main{
     margin-top: 20px;
     padding: 5%;
     text-align: center;
-    background-color: rgb(137, 138, 202);
     width: 50%;
     border-radius: 20px;
 }
@@ -38,13 +55,24 @@ main{
     display: flex;
     justify-content: center;
     gap: 20%;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
 .selection{
-    background-color: rgb(137, 138, 202);
-    padding: 20px;
-    border-radius: 20px;
+    font-family: mark;
+    font-size: 35px;
+    width: 20%;
+    text-align: center;
+    color: black;
+    font-weight: bolder;
+    background-color: rgb(22, 177, 238);
+    padding-right: 3px;
+    padding-left: 3px;
+    border-radius: 10px;
+}
+
+.selection:hover{
+    box-shadow: 0px 0px 10px rgb(22, 177, 238);
 }
 
 /*--- SECTION BOARD-GAME ---*/
@@ -53,22 +81,23 @@ main{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgb(13, 13, 98);
-    width: 25%;
+    background-color: rgb(33, 33, 52);
+    box-shadow:  0px 0px 5px inset rgb(62, 62, 97),
+    0px 0px 3px black;
+    width: 300px;
     height: 450px;
-    border-radius: 50px;
+    border-radius: 10px;
 }
 
 .board{
     display: flex;
     flex-direction: column;
-    padding: 15px;
+    padding: 5px;
     gap: 15px;
-    background-color: rgb(25, 10, 110);
-    border: 1px solid white;
+    background-color: transparent;
     width: 70%;
     height: 250px;
-    border-radius: 20px;
+    border-radius: 10px;
 }
 
 .line{
@@ -79,34 +108,40 @@ main{
 .spinner-bottom{
     display: flex;
     gap: 10px;
-    background-color: rgb(131, 133, 131);
-    border-radius: 10px;
+    background-color: transparent;
+    border-radius: 50px;
     align-items: center;
-    width: 50%;
+    width: 71%;
     height: 50px;
     margin-bottom: 10%;
+    box-shadow:  -2px -2px 5px inset rgb(57, 57, 80), 
+    -2px -2px 5px rgb(0, 0, 0);
 }
 
 .x-turn, .o-turn{
+    color: white;
     text-align: center;
     width: 100%;
     padding-top: 9%;
     height: 70%;
+    background-color: transparent;
     border-radius: 10px;
     font-weight: bolder;
-    z-index: 1;
+    z-index: 3;
 }
 
 .selector{
     position: absolute;
-    background-color: rgba(245, 243, 243, 0.404);
-    width: 6.5%;
-    border-radius: 10px;
+    background-color: rgba(8, 226, 255, 0.747);
+    box-shadow: 0px 0px 5px rgba(8, 226, 255, 0.747);;
+    width: 110px;
+    border-radius: 50px;
     height: 50px;
+    z-index: 2;
 }
 
 .to-right{
-    left: 43.8%;
+    left:42.3%;
     animation: toRight 0.1s;
 }
 
@@ -143,7 +178,8 @@ main{
 
 .cell{
     width: 100%;
-    border: 1px solid white;
+    box-shadow:  -2px -2px 5px inset rgb(57, 57, 80), 
+    -2px -2px 5px rgb(0, 0, 0);
 }
 
 .select{
@@ -161,22 +197,29 @@ main{
 /* PLAYERS */
 .player{
     text-align: center;
-    font-size: auto;
-    background-color: white;
-    color: black;
-    height: 100%;
+    background-color: transparent;
+    color: rgb(12, 228, 243);
 }
 
 .player p{
+    font-family: mark;
     font-weight: bolder;
-    font-size: 400%;
+    font-size: 45px;
     margin: auto;
+    animation: takeCell 0.1s;
+}
+
+@keyframes takeCell {
+    0%{font-size: 0px;}
+    100%{font-size: 45px;}
 }
 
 /* WINDOW FOR VICTORY */
 .win{
-    background-color: blue;
-    width: 50%;
+    background-color: rgb(33, 33, 52);
+    box-shadow:  0px 0px 5px inset rgb(62, 62, 97),
+    0px 0px 3px black;
+    width: 400px;
     height: 400px;
     border-radius: 20px;
 }
@@ -191,10 +234,17 @@ main{
 .default, .player-win{
     font-size: 50px;
     font-weight: bolder;
+    text-shadow: 2px 2px 3px rgb(209, 205, 205);
     color: white;
+    margin-bottom: 20px;
 }
 
 .player-win{
+    margin-top: 10px;
+    font-family: mark;
+    color: turquoise;
+    box-shadow:  -2px -2px 5px inset rgb(57, 57, 80), 
+    -2px -2px 5px rgb(0, 0, 0);
     margin-top: 5px;
     font-size: 100px;
 }
@@ -203,11 +253,20 @@ main{
     width: 50%;
     text-align: center;
     margin: auto;
-    margin-top: 50px;
+    margin-top: 20px;
     font-size: 40px;
     color: white;
-    border: 1px solid white;
+    box-shadow:  2px 2px 5px inset rgb(57, 57, 80), 
+    2px 2px 5px rgb(0, 0, 0);
     border-radius: 20px;
+    transition-duration: 1s;
+}
+
+.button-retry:hover{
+    color: black;
+    font-weight: bolder;
+    background-color: turquoise;
+    box-shadow: 0px 0px 10px turquoise;
 }
 
 
