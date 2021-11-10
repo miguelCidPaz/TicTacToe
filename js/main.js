@@ -51,9 +51,8 @@ class Player {
                     arrPlays = player.movementPlayer(arrPlays, height, width, this, lastPlayer, false)
                     if (player.getAutopilot) {
                         setTimeout(() => {
-                            arrPlays = player.movementIA(arrPlays);
+                            arrPlays = player.movementIA(arrPlays, height, width);
                         }, 200);
-                        player.checkWin(arrPlays, height, width, player.getRivalSymbol());
                     }
                 } else if (arrPlays[height][width] == 0) {
                     lastPlayer = player.getRivalSymbol();
@@ -79,35 +78,98 @@ class Player {
     //Si solo tenemos 1 simbolo rival cerca, colocaremos aleatoriamente -> acc = 1 random
     //Si tenemos 2 simbolos colocaremos la marca para detener la jugada  -> acc = 2 colocamos primer 0
     movementIA(arrPlays) {
-        let condition = 0, count = 0;
-        let IA = player.getRivalSymbol();
-        let numHeight = document.getElementById('panel-game').childElementCount;
-        let numWidth = document.getElementsByClassName('line')[0].childElementCount;
-        let cell = game.getBoardDivs();
-        arrPlays = player.checkBoard(arrPlays);
+        let hardMode = true
 
-        while (condition == 0) {
-            console.log('calculando...')
-            let height = Math.floor(Math.random() * numHeight);
-            let width = Math.floor(Math.random() * numWidth);
-            if (arrPlays[height][width] == player.getSymbol() || count > 30) {
-                if (arrPlays[height][width + 1] !== undefined && arrPlays[height][width + 1] == 0) {
-                    cell = cell[height][width + 1];
-                    arrPlays = player.movementPlayer(arrPlays, height, width + 1, cell, IA, true)
-                    condition++;
-                    break;
-                } else if (arrPlays[height + 1] !== undefined) {
-                    if (arrPlays[height + 1][width] !== undefined && arrPlays[height + 1][width] == 0) {
-                        cell = cell[height + 1][width];
-                        arrPlays = player.movementPlayer(arrPlays, height + 1, width, cell, IA, true)
-                        condition++;
-                        break;
+        if (!hardMode) {
+            arrPlays = player.randomMovement(arrPlays);
+        } else {
+            arrPlays = player.measuredMovement(arrPlays);
+        }
+
+        return arrPlays
+    }
+
+    randomMovement(arrPlays) {
+        let condition = true;
+        let height = 0, width = 0;
+        let cell = game.getBoardDivs();
+        let IA = player.getRivalSymbol();
+
+        while (condition) {
+            let randomHeight = Math.floor(Math.random() * document.getElementById('panel-game').childElementCount);
+            let randomWidth = Math.floor(Math.random() * document.getElementsByClassName('line')[0].childElementCount);
+            if (arrPlays[randomHeight] !== undefined) {
+                if (arrPlays[randomHeight][randomWidth] !== undefined) {
+                    if (arrPlays[randomHeight][randomWidth] === 0) {
+                        condition = false;
+                        height = randomHeight;
+                        width = randomWidth;
+                        arrPlays = player.movementPlayer(arrPlays, randomHeight, randomWidth, cell[randomHeight][randomWidth], IA, true);
                     }
                 }
             }
-            count++
         }
+
+        player.checkWin(arrPlays, height, width, IA);
+        arrPlays = player.checkBoard(arrPlays);
         return arrPlays
+    }
+
+    measuredMovement(arrPlays) {
+        let measuredHeight = document.getElementById('panel-game').childElementCount;
+        let measuredWidth = document.getElementsByClassName('line')[0].childElementCount;
+        let cell = game.getBoardDivs();
+        let condition = true;
+        let humanPlayer = player.getSymbol(), IA = player.getRivalSymbol();
+        let height = 0, width = 0, count = 0;
+
+        //Realizamos un pequeño for con el alto del panel
+        for (let i = 0; i < measuredHeight; i++) {
+            if (condition) {
+                //Si la linea horizontal tiene simbolo del jugador y 0s (vacios) lo recorremos con un for
+                if (arrPlays[i].includes(humanPlayer) && arrPlays[i].includes(0)) {
+                    //Contaremos cada symbol de jugador y al segundo si el siguiente esta vacio, procedemos
+                    for (let j = 0; j < measuredWidth; j++) {
+                        if (arrPlays[i][j] === humanPlayer) {
+                            count++;
+                            if (count == 2 && arrPlays[i][j + 1] === 0) {
+                                console.log('movimiento medido horizontal')
+                                condition = false; height = i; width = j + 1;
+                                arrPlays = player.movementPlayer(arrPlays, height, width, cell[height][width], IA, true);
+                            }
+                        }
+                    }
+                    count = 0;
+                }
+
+                //Si condition sigue en true ahora recorremos verticalmente el panel
+                if (condition) {
+                    if (arrPlays[i].includes(humanPlayer)) {
+                        if (arrPlays[i + 1] !== undefined && arrPlays[i + 1].includes(humanPlayer)) {
+                            let index = arrPlays[i].indexOf(humanPlayer);
+                            for (let j = index; j < measuredWidth; j++) {
+                                if (arrPlays[j][i] === 0) {
+                                    console.log('movimiento medido vertical')
+                                    condition = false; height = j; width = i;
+                                    arrPlays = player.movementPlayer(arrPlays, height, width, cell[height][width], IA, true);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //Si tras las dos busquedas no se realiza ningun movimiento, realizamos uno random
+        if (condition) {
+            console.log('movimiento random')
+            arrPlays = player.randomMovement(arrPlays);
+        }
+
+        player.checkWin(arrPlays, height, width, IA);
+        arrPlays = player.checkBoard(arrPlays);
+        return arrPlays;
     }
 
     //Comprobamos si el tablero esta completo
