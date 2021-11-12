@@ -1,5 +1,5 @@
 /**
- * Esta clase administrara el sistema de juego
+ * This class will manage the game system
  */
 class Player {
     turn = true;
@@ -13,7 +13,7 @@ class Player {
     }
 
     /**
-     * Simbolo del jugador principal
+     * Main player symbol
      * @param {String} symbol 
      */
     setSymbol(symbol) {
@@ -25,7 +25,7 @@ class Player {
     }
 
     /**
-     * Simbolo rival
+     * Rival Symbol
      * @param {String} rivalSymbol 
      */
     setRivalSymbol(rivalSymbol) {
@@ -33,7 +33,7 @@ class Player {
     }
 
     /**
-     * Marcara el compas de los turnos
+     * Mark the time of the shifts
      * @param {Boolean} turn 
      */
     setTurn(turn) {
@@ -45,7 +45,7 @@ class Player {
     }
 
     /**
-     * Seleccionara si se activara el autplay para 1 jugador
+     * It will select if the autplay for 1 player is activated
      * @param {Boolean} autopilot 
      */
     setAutopilot(autopilot) {
@@ -57,7 +57,7 @@ class Player {
     }
 
     /**
-     * Seleccionara si quieres modo facil o dificil con el autplay
+     * Select if you want easy or difficult mode with autoplay
      * @param {String} hard 
      */
     setHard(hard) {
@@ -65,8 +65,8 @@ class Player {
     }
 
     /**
-     * Esta funcion estara asignada a cada celda del tablero de juego, de esta forma con this
-     * hacemos referencia para ubicarnos dentro del tablero
+     * This function will be assigned to each cell of the game board, in this way with this
+     * we make reference to locate ourselves inside the board
      */
     takeCell() {
         let arrDivs = game.getBoardDivs();
@@ -100,7 +100,7 @@ class Player {
     }
 
     /**
-     * Esta funcion recibira los parametros necesarios para realizar el movimiento
+     * This function will receive the necessary parameters to carry out the movement
      * @param {Array} arrPlays 
      * @param {Number} height 
      * @param {Number} width 
@@ -118,7 +118,7 @@ class Player {
     }
 
     /**
-     * Recibira y devolvera el array con la jugada de la IA
+     * Receive and return the array with the AI move
      * @param {Array} arrPlays 
      * @returns 
      */
@@ -133,6 +133,11 @@ class Player {
         return arrPlays
     }
 
+    /**
+     * Random move that will look for the first empty square
+     * @param {Array} arrPlays 
+     * @returns 
+     */
     randomMovement(arrPlays) {
         let condition = true;
         let height = 0, width = 0;
@@ -159,6 +164,12 @@ class Player {
         return arrPlays
     }
 
+    /**
+     * Measured movement that will check first horizontally and then vertically
+     * If it does not find a move to cut, it will go on to make a random move
+     * @param {Array} arrPlays 
+     * @returns 
+     */
     measuredMovement(arrPlays) {
         let measuredHeight = document.getElementById('panel-game').childElementCount;
         let measuredWidth = document.getElementsByClassName('line')[0].childElementCount;
@@ -167,12 +178,12 @@ class Player {
         let humanPlayer = player.getSymbol(), IA = player.getRivalSymbol();
         let height = 0, width = 0, count = 0;
 
-        //Realizamos un pequeño for con el alto del panel
+        //We make a small for with the height of the panel
         for (let i = 0; i < measuredHeight; i++) {
             if (condition) {
-                //Si la linea horizontal tiene simbolo del jugador y 0s (vacios) lo recorremos con un for
+                //If the horizontal line has the player's symbol and 0s (empty) we go through it with a for
                 if (arrPlays[i].includes(humanPlayer) && arrPlays[i].includes(0)) {
-                    //Contaremos cada symbol de jugador y al segundo si el siguiente esta vacio, procedemos
+                    //We will count each player symbol and to the second if the next one is empty, we proceed
                     for (let j = 0; j < measuredWidth; j++) {
                         if (arrPlays[i][j] === humanPlayer) {
                             count++;
@@ -186,7 +197,7 @@ class Player {
                     count = 0;
                 }
 
-                //Si condition sigue en true ahora recorremos verticalmente el panel
+                //If condition is still true, now we go vertically through the panel
                 if (condition) {
                     if (arrPlays[i].includes(humanPlayer)) {
                         if (arrPlays[i + 1] !== undefined && arrPlays[i + 1].includes(humanPlayer)) {
@@ -196,11 +207,6 @@ class Player {
                                 condition = false; height = i + 2; width = index;
                                 arrPlays = player.movementPlayer(arrPlays, height, width, cell[height][width], IA, true);
                                 break;
-                            } else if (arrPlays[i][index] === 0) {
-                                console.log('movimiento medido vertical 2')
-                                condition = false; height = i; width = index;
-                                arrPlays = player.movementPlayer(arrPlays, height, width, cell[height][width], IA, true);
-                                break;
                             }
                         }
                     }
@@ -208,7 +214,7 @@ class Player {
             }
         }
 
-        //Si tras las dos busquedas no se realiza ningun movimiento, realizamos uno random
+        //If after the two searches no movement is made, we make a random one
         if (condition) {
             console.log('movimiento random')
             arrPlays = player.randomMovement(arrPlays);
@@ -219,7 +225,11 @@ class Player {
         return arrPlays;
     }
 
-    //Comprobamos si el tablero esta completo
+    /**
+     * Check if the board is complete, if it is, it will reset it, if not it will return it as is
+     * @param {Array} arrPlays 
+     * @returns 
+     */
     checkBoard(arrPlays) {
         let check = true;
         for (let i = 0; i < arrPlays.length; i++) {
@@ -239,28 +249,26 @@ class Player {
         return arrPlays;
     }
 
-    exitPlay() {
-        let panelPlay = document.getElementById('panel');
-        panelPlay.classList.add('no-visible');
-    }
-
-    //Recibimos los valores para conocer la tirada sin necesidad de volver a localizarla
+    /**
+     * Check if the last player meets the victory conditions
+     * @param {Array} arrPlays 
+     * @param {Number} height 
+     * @param {Number} width 
+     * @param {String} lastPlayer 
+     */
     checkWin(arrPlays, height, width, lastPlayer) {
-        const ref = arrPlays;//Obtiene el tablero de juegos
-        let acc = 0;//Acumulara la cuenta
+        const ref = arrPlays;
+        let acc = 0;
         let acc1 = 0, acc2 = 0, acc3 = 0, acc4 = 0;
 
-        //Revisamos lateralmente
         acc1 = this.checkThisSide(ref, height, width, acc, lastPlayer, 0)
         acc2 = this.checkThisSide(ref, height, width, acc, lastPlayer, 1)
         this.checkThis(acc1, acc2) ? game.reportVictory(lastPlayer) : '';
 
-        //Revisamos verticalmente
         acc1 = this.checkThisTop(ref, height, width, acc, lastPlayer, 0);
         acc2 = this.checkThisTop(ref, height, width, acc, lastPlayer, 1);
         this.checkThis(acc1, acc2) ? game.reportVictory(lastPlayer) : '';
 
-        //Revisamos las diagonales de la jugada
         acc1 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 0);
         acc2 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 1);
         acc3 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 2);
@@ -269,6 +277,12 @@ class Player {
         this.checkThis(acc3, acc4) ? game.reportVictory(lastPlayer) : '';
     }
 
+    /**
+     * This function will only be used to simplify checkWin
+     * @param {Number} n1 
+     * @param {Number} n2 
+     * @returns 
+     */
     checkThis(n1, n2) {
         if (n1 + n2 > game.getNumber()) {
             return true
@@ -277,6 +291,17 @@ class Player {
         }
     }
 
+    /**
+     * Recursively we will count in the array of moves how many times
+     * the player's symbol is repeated continuously. For this we return the acc (accumulator)
+     * @param {Array} ref 
+     * @param {Number} height 
+     * @param {Number} width 
+     * @param {Number} acc 
+     * @param {String} lastPlayer 
+     * @param {Number} option 
+     * @returns 
+     */
     checkThisSide(ref, height, width, acc, lastPlayer, option) {
         let referrer = ref[height][width]
 
@@ -293,6 +318,17 @@ class Player {
         }
     }
 
+    /**
+     * Recursively we will count in the array of moves how many times
+     * the player's symbol is repeated continuously. For this we return the acc (accumulator)
+     * @param {Array} ref 
+     * @param {Number} height 
+     * @param {Number} width 
+     * @param {Number} acc 
+     * @param {String} lastPlayer 
+     * @param {Number} option 
+     * @returns 
+     */
     checkThisTop(ref, height, width, acc, lastPlayer, option) {
         if (ref[height] === undefined) {
             return acc;
@@ -312,6 +348,17 @@ class Player {
         }
     }
 
+    /**
+     * Recursively we will count in the array of moves how many times
+     * the player's symbol is repeated continuously. For this we return the acc (accumulator)
+     * @param {Array} ref 
+     * @param {Number} height 
+     * @param {Number} width 
+     * @param {Number} acc 
+     * @param {String} lastPlayer 
+     * @param {Number} option 
+     * @returns 
+     */
     checkThisDiagonal(ref, height, width, acc, lastPlayer, option) {
         if (ref[height] === undefined) {
             return acc;
@@ -343,6 +390,11 @@ class Player {
         }
     }
 
+    /**
+     * We receive the player's symbol and the label where we are going to place it, and we proceed to draw it
+     * @param {String} playerSymbol 
+     * @param {HTMLElement} label 
+     */
     drawPlayer(playerSymbol, label) {
         let movement = document.createElement('div');
         let symbolPlayer = document.createElement('p');
@@ -354,6 +406,9 @@ class Player {
 
 }
 
+/**
+ * This class will manage all the panels of the game
+ */
 class Game {
     board = [];
     boardDivs = [];
@@ -367,6 +422,10 @@ class Game {
         return this.board;
     }
 
+    /**
+     * Array that will store the moves separately so as not to rely on the HTML in the count
+     * @param {Array} board 
+     */
     setBoard(board) {
         this.board = board
     }
@@ -375,20 +434,22 @@ class Game {
         return this.boardDivs;
     }
 
+    /**
+     * Array that will store the game's divs for easier reference
+     * @param {Array} boardDivs 
+     */
     setBoardDivs(boardDivs) {
         this.boardDivs = boardDivs;
     }
 
-    //Con esto crearemos el board que guarda este objeto
+    /**
+     * This function will create both arrays used during the game, like this
+     * although we are forced to double for, at least we take advantage of it.
+     */
     setBoards() {
         let height = document.getElementsByClassName('board')[0].childElementCount;
         let width = document.getElementsByClassName('line')[0].childElementCount;
 
-        /**
-         * Creamos dos arrays bidimensionales
-         * uno para seguir las jugadas y realizar los checks
-         * otro para lograr la posicion de cada click
-         */
         let arr = [], line = [];
         let arr2 = [], line2 = [];
         for (let i = 0; i < height; i++) {
@@ -405,7 +466,9 @@ class Game {
         this.setBoardDivs(arr2);
     }
 
-
+    /**
+     * This function will start the game by resetting the game board and arrays.
+     */
     newGame() {
         let panelPlay = document.getElementById('panel');
         this.removeAll();
@@ -416,6 +479,12 @@ class Game {
         panelPlay.classList.remove('no-visible');
     }
 
+    /**
+     * Depending on the player symbol will move to one side or the other, we add an option to reuse
+     * the same function both in the beginning and in the course of the game
+     * @param {String} symbol 
+     * @param {Number} option 
+     */
     selectorDance(symbol, option = 0) {
         let position = document.getElementById('position');
         if (symbol === 'X') {
@@ -440,6 +509,10 @@ class Game {
         }
     }
 
+    /**
+     * It will show the victory window if the conditions are met by receiving the player's symbol winner
+     * @param {String} symbol 
+     */
     reportVictory(symbol) {
         let board = document.getElementById('panel');
         let boardWin = document.getElementById('panel-win');
@@ -451,6 +524,9 @@ class Game {
         button.addEventListener('click', this.retryGame)
     }
 
+    /**
+     * Function that will take us back to the initial screen
+     */
     retryGame() {
         let boardWin = document.getElementById('panel-win')
         let boardWelcome = document.getElementById('panel-welcome')
@@ -458,6 +534,9 @@ class Game {
         boardWelcome.classList.remove('no-visible');
     }
 
+    /**
+     * Function that will erase the elements of the game panel for the reset
+     */
     removeAll() {
         let board = document.getElementById('panel-game');
         while (board.firstChild) {
@@ -465,7 +544,10 @@ class Game {
         }
     }
 
-    //Crea una linea
+    /**
+     * Function that will serve to draw each line of the board
+     * @returns 
+     */
     makeLine() {
         let number = 3;
         let line = document.createElement('div')
@@ -479,7 +561,9 @@ class Game {
         return line;
     }
 
-    //Junta las lineas para formar el 3 en raya
+    /**
+     * Function that calls the makeLine function as many times as necessary to form the board
+     */
     makeBoard() {
         let number = 3;
         let board = document.getElementsByClassName('board')[0];
@@ -488,6 +572,9 @@ class Game {
         }
     }
 
+    /**
+     * Function to choose the symbol of the main player
+     */
     selectSymbol() {
         let father = this.parentElement;
         if (this.innerText == 'O') {
@@ -502,6 +589,9 @@ class Game {
         nextPage(0);
     }
 
+    /**
+     * Function to choose how many players there will be, it serves to set the player before the game
+     */
     selectNumPlayers() {
         let father = this.parentElement;
         if (this.innerText == '1') {
@@ -516,6 +606,9 @@ class Game {
         }
     }
 
+    /**
+     * Identical to the select player, it will serve to set the player according to the difficulty you are looking for
+     */
     selectDif() {
         let father = this.parentElement;
         if (this.innerText === 'Easy') {
@@ -529,6 +622,10 @@ class Game {
         father.parentElement.classList.add('no-visible')
     }
 
+    /**
+     * Function that gives all the buttons their respective events, so we avoid placing this setting outside,
+     * Marked as const so that its value cannot be modified
+     */
     prepareEvents() {
         const selections = document.getElementsByClassName('selection');
         for (let element of selections) {
@@ -545,19 +642,21 @@ class Game {
     }
 }
 
-//Deberian moverse y almacenarse en algun objeto, por lo menos el player
+//We declare the player: the logic of the game, and the game: the game board
 let player = new Player();
 let game = new Game();
 
-//Coloca los primeros eventos en los botones de seleccion
+//We place the button events
 game.prepareEvents();
 
-//Pasa pagina, debera modificarse conforme se añadan ventanas
+/**
+ * Number will serve to know from which side this function is called to act accordingly.
+ * @param {Number} option 
+ */
 function nextPage(option = 0) {
     let welcome = document.getElementById('panel-welcome');
     let panelPlayers = document.getElementById('panel-players')
     let panelDif = document.getElementById('panel-dif')
-    let panelPlay = document.getElementById('panel');
 
     switch (option) {
         case 0:
