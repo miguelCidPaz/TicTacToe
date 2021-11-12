@@ -1,14 +1,21 @@
-
+/**
+ * Esta clase administrara el sistema de juego
+ */
 class Player {
     turn = true;
     symbol = '';
     rivalSymbol = '';
-    autopilot = true;
+    autopilot = false;
+    hard = false
 
     getSymbol() {
         return this.symbol;
     }
 
+    /**
+     * Simbolo del jugador principal
+     * @param {String} symbol 
+     */
     setSymbol(symbol) {
         this.symbol = symbol;
     }
@@ -17,10 +24,18 @@ class Player {
         return this.rivalSymbol;
     }
 
+    /**
+     * Simbolo rival
+     * @param {String} rivalSymbol 
+     */
     setRivalSymbol(rivalSymbol) {
         this.rivalSymbol = rivalSymbol;
     }
 
+    /**
+     * Marcara el compas de los turnos
+     * @param {Boolean} turn 
+     */
     setTurn(turn) {
         this.turn = turn;
     }
@@ -29,15 +44,34 @@ class Player {
         return this.autopilot;
     }
 
+    /**
+     * Seleccionara si se activara el autplay para 1 jugador
+     * @param {Boolean} autopilot 
+     */
     setAutopilot(autopilot) {
         this.autopilot = autopilot;
     }
 
+    getHard() {
+        return this.hard;
+    }
+
+    /**
+     * Seleccionara si quieres modo facil o dificil con el autplay
+     * @param {String} hard 
+     */
+    setHard(hard) {
+        this.hard = hard;
+    }
+
+    /**
+     * Esta funcion estara asignada a cada celda del tablero de juego, de esta forma con this
+     * hacemos referencia para ubicarnos dentro del tablero
+     */
     takeCell() {
-        //Sacamos desde aqui los arrays creados en el newGame()
-        //arrPlays servira para marcar la jugada, arrDivs para encontrar los indices
         let arrDivs = game.getBoardDivs();
         let arrPlays = game.getBoard();
+        let autoplay = player.getAutopilot();
         let width = 0, height = 0;
         let numberLines = document.getElementsByClassName('board')[0].childElementCount;
         let lastPlayer = player.getSymbol();
@@ -49,7 +83,7 @@ class Player {
                 if (player.turn == true && arrPlays[height][width] == 0) {
                     lastPlayer = player.getSymbol();
                     arrPlays = player.movementPlayer(arrPlays, height, width, this, lastPlayer, false)
-                    if (player.getAutopilot) {
+                    if (autoplay) {
                         setTimeout(() => {
                             arrPlays = player.movementIA(arrPlays, height, width);
                         }, 200);
@@ -65,6 +99,16 @@ class Player {
         arrPlays = player.checkBoard(arrPlays);
     }
 
+    /**
+     * Esta funcion recibira los parametros necesarios para realizar el movimiento
+     * @param {Array} arrPlays 
+     * @param {Number} height 
+     * @param {Number} width 
+     * @param {HTMLElement} label 
+     * @param {String} actualPlayer 
+     * @param {Number} turn 
+     * @returns Array que contiene la jugada realizada
+     */
     movementPlayer(arrPlays, height, width, label, actualPlayer, turn) {
         arrPlays[height][width] = actualPlayer;
         player.drawPlayer(actualPlayer, label);
@@ -73,17 +117,17 @@ class Player {
         return arrPlays;
     }
 
-    //Tenemos que comprobar en que posicion coloco el jugador -> ArrPlays[height][width]
-    //Recorrer las casillas circundantes a la ultima jugada -> Usaremos la busqueda que usamos para checkwin
-    //Si solo tenemos 1 simbolo rival cerca, colocaremos aleatoriamente -> acc = 1 random
-    //Si tenemos 2 simbolos colocaremos la marca para detener la jugada  -> acc = 2 colocamos primer 0
+    /**
+     * Recibira y devolvera el array con la jugada de la IA
+     * @param {Array} arrPlays 
+     * @returns 
+     */
     movementIA(arrPlays) {
-        let hardMode = true
-
-        if (!hardMode) {
-            arrPlays = player.randomMovement(arrPlays);
-        } else {
+        let dif = player.getHard();
+        if (dif) {
             arrPlays = player.measuredMovement(arrPlays);
+        } else {
+            arrPlays = player.randomMovement(arrPlays);
         }
 
         return arrPlays
@@ -147,13 +191,16 @@ class Player {
                     if (arrPlays[i].includes(humanPlayer)) {
                         if (arrPlays[i + 1] !== undefined && arrPlays[i + 1].includes(humanPlayer)) {
                             let index = arrPlays[i].indexOf(humanPlayer);
-                            for (let j = index; j < measuredWidth; j++) {
-                                if (arrPlays[j][i] === 0) {
-                                    console.log('movimiento medido vertical')
-                                    condition = false; height = j; width = i;
-                                    arrPlays = player.movementPlayer(arrPlays, height, width, cell[height][width], IA, true);
-                                    break;
-                                }
+                            if (arrPlays[i + 2] !== undefined && arrPlays[i + 2][index] == 0) {
+                                console.log('movimiento medido vertical 1')
+                                condition = false; height = i + 2; width = index;
+                                arrPlays = player.movementPlayer(arrPlays, height, width, cell[height][width], IA, true);
+                                break;
+                            } else if (arrPlays[i][index] === 0) {
+                                console.log('movimiento medido vertical 2')
+                                condition = false; height = i; width = index;
+                                arrPlays = player.movementPlayer(arrPlays, height, width, cell[height][width], IA, true);
+                                break;
                             }
                         }
                     }
@@ -190,6 +237,11 @@ class Player {
             return arrPlays;
         }
         return arrPlays;
+    }
+
+    exitPlay() {
+        let panelPlay = document.getElementById('panel');
+        panelPlay.classList.add('no-visible');
     }
 
     //Recibimos los valores para conocer la tirada sin necesidad de volver a localizarla
@@ -355,11 +407,13 @@ class Game {
 
 
     newGame() {
+        let panelPlay = document.getElementById('panel');
         this.removeAll();
         this.makeBoard();
         this.selectorDance(player.getSymbol(), 1);
         this.setBoards();
         player.setTurn(true)
+        panelPlay.classList.remove('no-visible');
     }
 
     selectorDance(symbol, option = 0) {
@@ -387,10 +441,10 @@ class Game {
     }
 
     reportVictory(symbol) {
-        let board = document.getElementById('panel')
+        let board = document.getElementById('panel');
         let boardWin = document.getElementById('panel-win');
-        let winner = document.getElementById('winner')
-        let button = document.getElementById('retry')
+        let winner = document.getElementById('winner');
+        let button = document.getElementById('retry');
         board.classList.add('no-visible');
         winner.innerHTML = symbol;
         boardWin.classList.remove('no-visible');
@@ -435,16 +489,59 @@ class Game {
     }
 
     selectSymbol() {
-        if (this.innerText == 'X') {
-            player.setSymbol('X');
-            player.setRivalSymbol('O');
-        } else {
+        let father = this.parentElement;
+        if (this.innerText == 'O') {
             player.setSymbol('O');
             player.setRivalSymbol('X');
+            console.log('seleccionada O')
+        } else {
+            player.setSymbol('X');
+            player.setRivalSymbol('O');
+            console.log('seleccionada X')
         }
+        nextPage(0);
+    }
 
-        nextPage();
+    selectNumPlayers() {
+        let father = this.parentElement;
+        if (this.innerText == '1') {
+            player.setAutopilot(true);
+            console.log('autopiloto activado')
+            nextPage(1);
+        } else {
+            player.setAutopilot(false);
+            father.parentElement.classList.add('no-visible')
+            console.log('autopiloto desactivado')
+            game.newGame();
+        }
+    }
+
+    selectDif() {
+        let father = this.parentElement;
+        if (this.innerText === 'Easy') {
+            player.setHard(false);
+            console.log('modo facil')
+        } else {
+            player.setHard(true);
+            console.log('modo dificil')
+        }
         game.newGame();
+        father.parentElement.classList.add('no-visible')
+    }
+
+    prepareEvents() {
+        const selections = document.getElementsByClassName('selection');
+        for (let element of selections) {
+            element.addEventListener('click', game.selectSymbol);
+        }
+        const selectionsPlayers = document.getElementsByClassName('selection-players');
+        for (let element of selectionsPlayers) {
+            element.addEventListener('click', game.selectNumPlayers);
+        }
+        const selectionDif = document.getElementsByClassName('selection-dif');
+        for (let element of selectionDif) {
+            element.addEventListener('click', game.selectDif);
+        }
     }
 }
 
@@ -453,15 +550,31 @@ let player = new Player();
 let game = new Game();
 
 //Coloca los primeros eventos en los botones de seleccion
-const selections = document.getElementsByClassName('selection');
-for (let element of selections) {
-    element.addEventListener('click', game.selectSymbol);
-}
+game.prepareEvents();
 
 //Pasa pagina, debera modificarse conforme se añadan ventanas
-function nextPage() {
-    let welcome = document.getElementsByClassName('modal-welcome')[0];
-    let board = document.getElementsByClassName('board-game')[0];
-    welcome.classList.add('no-visible');
-    board.classList.remove('no-visible');
+function nextPage(option = 0) {
+    let welcome = document.getElementById('panel-welcome');
+    let panelPlayers = document.getElementById('panel-players')
+    let panelDif = document.getElementById('panel-dif')
+    let panelPlay = document.getElementById('panel');
+
+    switch (option) {
+        case 0:
+            welcome.classList.add('no-visible');
+            if (panelPlayers.classList.contains('no-visible')) {
+                panelPlayers.classList.remove('no-visible');
+            }
+            break;
+        case 1:
+            panelPlayers.classList.add('no-visible')
+            if (panelDif.classList.contains('no-visible')) {
+                panelDif.classList.remove('no-visible');
+            }
+            break;
+        default:
+            console.log('out of range');
+            break;
+
+    }
 }
