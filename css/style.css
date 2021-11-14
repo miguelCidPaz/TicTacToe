@@ -5,6 +5,10 @@
     font-family: sans-serif;
 }
 
+html, body{
+    height:100%;
+}
+
 body{
     overflow: hidden;
 }
@@ -23,7 +27,7 @@ main{
     align-items: center;
     background-color: rgb(41, 40, 40);
     width: 100%;
-    min-height: 1057px;
+    min-height: 100%;
 }
 
 /*--- WELCOME MODAL ---*/
@@ -79,6 +83,8 @@ main{
     padding-right: 3px;
     padding-left: 3px;
     border-radius: 10px;
+    transition-duration: 0.5s;
+    cursor: pointer;
 }
 
 .selection:hover, .selection-players:hover, .selection-dif:hover{
@@ -117,6 +123,7 @@ main{
 
 /*--- SPINNER ---*/
 .spinner-bottom{
+    position: relative;
     display: flex;
     gap: 10px;
     background-color: transparent;
@@ -157,7 +164,7 @@ main{
 }
 
 .to-left{
-    left:42.9%;
+    left: -3.1%;
     animation: toLeft 0.1s;
 }
 
@@ -165,7 +172,7 @@ main{
 
 @keyframes toRight {
     0%{
-        left: 43.8%;
+        left: -3.1%;
     }
     100%{
         left: 49.7%;
@@ -176,7 +183,7 @@ main{
         left: 49.7%;
     }
     100%{
-        left:42.9%;
+        left: -3.1%;
     }
 }
 
@@ -296,7 +303,7 @@ main{
 
 /* RESPONSIVE */
 @media (max-height:627px) {
-    section{
+/*     section{
         margin-top: -100px;
     }
     .modal-welcome, .modal-players, .modal-dif{
@@ -306,10 +313,10 @@ main{
     #panel{
         margin-top: -650px;
     }
-
+*/
     .win{
-        margin-top: -620px;
-    }
+        margin-top: 10px;
+    } 
 }
 
 @media(max-width:400px){
