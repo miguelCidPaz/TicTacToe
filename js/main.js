@@ -6,7 +6,8 @@ class Player {
     symbol = '';
     rivalSymbol = '';
     autopilot = false;
-    hard = false
+    hard = false;
+    endGame = false;
 
     getSymbol() {
         return this.symbol;
@@ -64,6 +65,18 @@ class Player {
         this.hard = hard;
     }
 
+    getEndGame() {
+        return this.endGame;
+    }
+
+    /**
+     * Control when the game ends
+     * @param {Boolean} endGame 
+     */
+    setEndGame(endGame) {
+        this.endGame = endGame;
+    }
+
     /**
      * This function will be assigned to each cell of the game board, in this way with this
      * we make reference to locate ourselves inside the board
@@ -75,6 +88,7 @@ class Player {
         let width = 0, height = 0;
         let numberLines = document.getElementsByClassName('board')[0].childElementCount;
         let lastPlayer = player.getSymbol();
+        let end = player.getEndGame();
 
         for (let i = 0; i < numberLines; i++) {
             if (arrDivs[i].includes(this)) {
@@ -83,7 +97,7 @@ class Player {
                 if (player.turn == true && arrPlays[height][width] == 0) {
                     lastPlayer = player.getSymbol();
                     arrPlays = player.movementPlayer(arrPlays, height, width, this, lastPlayer, false)
-                    if (autoplay) {
+                    if (autoplay && !end) {
                         setTimeout(() => {
                             arrPlays = player.movementIA(arrPlays, height, width);
                         }, 200);
@@ -107,7 +121,7 @@ class Player {
      * @param {HTMLElement} label 
      * @param {String} actualPlayer 
      * @param {Number} turn 
-     * @returns Array que contiene la jugada realizada
+     * @returns
      */
     movementPlayer(arrPlays, height, width, label, actualPlayer, turn) {
         arrPlays[height][width] = actualPlayer;
@@ -201,7 +215,7 @@ class Player {
                 if (condition) {
                     if (arrPlays[i].includes(humanPlayer)) {
                         if (arrPlays[i + 1] !== undefined && arrPlays[i + 1].includes(humanPlayer)) {
-                            let index = arrPlays[i].indexOf(humanPlayer);
+                            let index = arrPlays[i + 1].indexOf(humanPlayer);
                             if (arrPlays[i + 2] !== undefined && arrPlays[i + 2][index] == 0) {
                                 console.log('movimiento medido vertical 1')
                                 condition = false; height = i + 2; width = index;
@@ -232,12 +246,14 @@ class Player {
      */
     checkBoard(arrPlays) {
         let check = true;
+        let end = player.getEndGame();
+
         for (let i = 0; i < arrPlays.length; i++) {
             if (arrPlays[i].includes(0)) {
                 check = false;
             }
         }
-        if (check) {
+        if (check && !end) {
             for (let i = 0; i < arrPlays.length; i++) {
                 for (let j = 0; j < arrPlays[i].length; j++) {
                     arrPlays[i][j] = 0;
@@ -263,18 +279,30 @@ class Player {
 
         acc1 = this.checkThisSide(ref, height, width, acc, lastPlayer, 0)
         acc2 = this.checkThisSide(ref, height, width, acc, lastPlayer, 1)
-        this.checkThis(acc1, acc2) ? game.reportVictory(lastPlayer) : '';
+        if (this.checkThis(acc1, acc2)) {
+            game.reportVictory(lastPlayer);
+            player.setEndGame(true);
+        }
 
         acc1 = this.checkThisTop(ref, height, width, acc, lastPlayer, 0);
         acc2 = this.checkThisTop(ref, height, width, acc, lastPlayer, 1);
-        this.checkThis(acc1, acc2) ? game.reportVictory(lastPlayer) : '';
+        if (this.checkThis(acc1, acc2)) {
+            game.reportVictory(lastPlayer);
+            player.setEndGame(true);
+        }
 
         acc1 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 0);
         acc2 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 1);
         acc3 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 2);
         acc4 = this.checkThisDiagonal(ref, height, width, acc, lastPlayer, 3);
-        this.checkThis(acc1, acc2) ? game.reportVictory(lastPlayer) : '';
-        this.checkThis(acc3, acc4) ? game.reportVictory(lastPlayer) : '';
+        if (this.checkThis(acc1, acc2)) {
+            game.reportVictory(lastPlayer);
+            player.setEndGame(true);
+        }
+        if (this.checkThis(acc3, acc4)) {
+            game.reportVictory(lastPlayer);
+            player.setEndGame(true);
+        }
     }
 
     /**
@@ -475,7 +503,8 @@ class Game {
         this.makeBoard();
         this.selectorDance(player.getSymbol(), 1);
         this.setBoards();
-        player.setTurn(true)
+        player.setTurn(true);
+        player.setEndGame(false);
         panelPlay.classList.remove('no-visible');
     }
 
