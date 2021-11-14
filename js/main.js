@@ -143,7 +143,6 @@ class Player {
         } else {
             arrPlays = player.randomMovement(arrPlays);
         }
-
         return arrPlays
     }
 
@@ -161,13 +160,11 @@ class Player {
         while (condition) {
             let randomHeight = Math.floor(Math.random() * document.getElementById('panel-game').childElementCount);
             let randomWidth = Math.floor(Math.random() * document.getElementsByClassName('line')[0].childElementCount);
-            if (arrPlays[randomHeight] !== undefined) {
-                if (arrPlays[randomHeight][randomWidth] === 0) {
-                    condition = false;
-                    height = randomHeight;
-                    width = randomWidth;
-                    arrPlays = player.movementPlayer(arrPlays, randomHeight, randomWidth, cell[randomHeight][randomWidth], IA, true);
-                }
+            if (arrPlays[randomHeight][randomWidth] === 0) {
+                condition = false;
+                height = randomHeight;
+                width = randomWidth;
+                arrPlays = player.movementPlayer(arrPlays, height, width, cell[height][width], IA, true);
             }
         }
 
