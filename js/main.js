@@ -580,6 +580,12 @@ class Game {
             let cell = document.createElement('div')
             cell.classList = 'cell'
             cell.addEventListener('click', player.takeCell);
+            cell.addEventListener('mouseover', () => {
+                console.log('preview');
+            })
+            cell.addEventListener('mouseleave', () => {
+                console.log('saliendo');
+            })
             line.appendChild(cell);
         }
         return line;
