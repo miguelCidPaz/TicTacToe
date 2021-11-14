@@ -256,8 +256,9 @@ main{
     animation: takeCell 0.1s;
 }
 
-.player-preview{
+.player-preview p{
     opacity: 0.2;
+    cursor: pointer;
 }
 
 
