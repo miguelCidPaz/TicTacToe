@@ -259,6 +259,7 @@ main{
 .player-preview p{
     opacity: 0.2;
     cursor: pointer;
+    text-shadow: 0px 0px 2px rgb(12, 228, 243);
 }
 
 
