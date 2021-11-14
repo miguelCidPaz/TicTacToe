@@ -242,19 +242,24 @@ main{
 
 
 /* PLAYERS */
-.player{
+.player, .player-preview{
     text-align: center;
     background-color: transparent;
     color: rgb(12, 228, 243);
 }
 
-.player p{
+.player p, .player-preview p{
     font-family: mark;
     font-weight: bolder;
     font-size: 45px;
     margin: auto;
     animation: takeCell 0.1s;
 }
+
+.player-preview{
+    opacity: 0.2;
+}
+
 
 @keyframes takeCell {
     0%{font-size: 0px; transform: rotate(0deg);}
