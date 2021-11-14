@@ -3,6 +3,7 @@
     margin: 0px;
     padding: 0px;
     font-family: sans-serif;
+    cursor: default;
 }
 
 html, body{
@@ -65,11 +66,29 @@ main{
     border-radius: 20px;
 }
 
+.welcome{
+    opacity: 1;
+    animation: welcomeAnimation 0.5s;
+}
+
+@keyframes welcomeAnimation {
+    0%{opacity: 0;}
+    75%{opacity: 1;}
+}
+
 .selections{
     display: flex;
     justify-content: center;
     gap: 20%;
     margin-top: 10px;
+    animation: selectionsDance 0.5s;
+}
+
+@keyframes selectionsDance {
+    0%{gap: 20%;}
+    5%{gap: 3%;}
+    25%{gap: 4%;}
+    100%{gap: 20%;}
 }
 
 .selection, .selection-players, .selection-dif{
@@ -85,6 +104,14 @@ main{
     border-radius: 10px;
     transition-duration: 0.5s;
     cursor: pointer;
+    animation: buttonAnimations 0.5s;
+}
+
+@keyframes buttonAnimations {
+    0%{width: 20%;}
+    5%{width: 30%;}
+    25%{width: 40%;}
+    100%{width: 20%;}
 }
 
 .selection:hover, .selection-players:hover, .selection-dif:hover{
@@ -102,7 +129,6 @@ main{
     0px 0px 3px black;
     width: 300px;
     height: 450px;
-    margin-top: -90px;
     border-radius: 10px;
 }
 
@@ -151,7 +177,7 @@ main{
 .selector{
     position: absolute;
     background-color: rgba(8, 226, 255, 0.747);
-    box-shadow: 0px 0px 5px rgba(8, 226, 255, 0.747);;
+    box-shadow: 0px 0px 15px rgba(8, 226, 255, 0.747);;
     width: 110px;
     border-radius: 50px;
     height: 50px;
@@ -199,7 +225,9 @@ main{
     box-shadow:  -2px -2px 2px inset rgb(22, 22, 27), 
     -2px -2px 5px rgb(0, 0, 0),
     2px 2px 2px rgb(69, 69, 80);
+    cursor: pointer;
 }
+
 
 .select{
     text-align: center;
@@ -284,6 +312,7 @@ main{
     width: 50%;
     text-align: center;
     margin: auto;
+    cursor: pointer;
     margin-top: 40px;
     font-size: 40px;
     color: white;
@@ -303,17 +332,6 @@ main{
 
 /* RESPONSIVE */
 @media (max-height:627px) {
-/*     section{
-        margin-top: -100px;
-    }
-    .modal-welcome, .modal-players, .modal-dif{
-        margin-top: -500px;
-    }
-
-    #panel{
-        margin-top: -650px;
-    }
-*/
     .win{
         margin-top: 10px;
     } 
