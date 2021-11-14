@@ -33,6 +33,10 @@ class Player {
         this.rivalSymbol = rivalSymbol;
     }
 
+    getTurn() {
+        return this.turn;
+    }
+
     /**
      * Mark the time of the shifts
      * @param {Boolean} turn 
@@ -137,11 +141,14 @@ class Player {
      * @returns 
      */
     movementIA(arrPlays) {
+        let end = player.getEndGame();
         let dif = player.getHard();
-        if (dif) {
-            arrPlays = player.measuredMovement(arrPlays);
-        } else {
-            arrPlays = player.randomMovement(arrPlays);
+        if (!end) {
+            if (dif) {
+                arrPlays = player.measuredMovement(arrPlays);
+            } else {
+                arrPlays = player.randomMovement(arrPlays);
+            }
         }
         return arrPlays
     }
@@ -419,12 +426,45 @@ class Player {
      * @param {HTMLElement} label 
      */
     drawPlayer(playerSymbol, label) {
+        if (label.firstChild) {
+            if (label.firstElementChild.classList.contains('player-preview')) {
+                label.firstElementChild.remove();
+            }
+        }
+
         let movement = document.createElement('div');
         let symbolPlayer = document.createElement('p');
         symbolPlayer.innerHTML = playerSymbol;
         movement.appendChild(symbolPlayer);
         movement.classList.add('player');
         label.appendChild(movement);
+    }
+
+    /**
+     * Provides a preview of the symbol
+     */
+    drawPreviewPlayer() {
+        let playerSymbolPreview = '';
+        let inTurn = player.getTurn();
+        inTurn ? playerSymbolPreview = player.getSymbol() : playerSymbolPreview = player.getRivalSymbol();
+
+        if (!this.firstChild) {
+            let container = document.createElement('div');
+            container.classList.add('player-preview')
+            let p = document.createElement('p');
+            p.innerHTML = playerSymbolPreview;
+            container.appendChild(p);
+            this.appendChild(container);
+        }
+    }
+
+    /**
+     * Remove the class preview
+     */
+    removePreview() {
+        if (this.firstChild.classList.contains('player-preview')) {
+            this.firstChild.remove();
+        }
     }
 
 }
@@ -580,12 +620,8 @@ class Game {
             let cell = document.createElement('div')
             cell.classList = 'cell'
             cell.addEventListener('click', player.takeCell);
-            cell.addEventListener('mouseover', () => {
-                console.log('preview');
-            })
-            cell.addEventListener('mouseleave', () => {
-                console.log('saliendo');
-            })
+            cell.addEventListener('mouseover', player.drawPreviewPlayer)
+            cell.addEventListener('mouseleave', player.removePreview)
             line.appendChild(cell);
         }
         return line;
