@@ -5,6 +5,10 @@
     font-family: sans-serif;
 }
 
+body{
+    overflow: hidden;
+}
+
 /*--- FONT ---*/
 @font-face {
     font-family: mark;
@@ -19,7 +23,7 @@ main{
     align-items: center;
     background-color: rgb(41, 40, 40);
     width: 100%;
-    min-height: 757px;
+    min-height: 1057px;
 }
 
 /*--- WELCOME MODAL ---*/
@@ -30,6 +34,7 @@ main{
     background-color: rgb(33, 33, 52);
     width: 400px;
     height: 220px;
+    margin-top: -90px;
     border-radius: 20px;
 }
 
@@ -91,6 +96,7 @@ main{
     0px 0px 3px black;
     width: 300px;
     height: 450px;
+    margin-top: -90px;
     border-radius: 10px;
 }
 
@@ -151,7 +157,7 @@ main{
 }
 
 .to-left{
-    left:42.3%;
+    left:42.9%;
     animation: toLeft 0.1s;
 }
 
@@ -170,7 +176,7 @@ main{
         left: 49.7%;
     }
     100%{
-        left: 43.8%;
+        left:42.9%;
     }
 }
 
@@ -227,6 +233,7 @@ main{
     0px 0px 3px black;
     width: 400px;
     height: 400px;
+    margin-top: -150px;
     border-radius: 20px;
 }
 
@@ -287,6 +294,39 @@ main{
     box-shadow: 0px 0px 10px turquoise;
 }
 
+/* RESPONSIVE */
+@media (max-height:627px) {
+    section{
+        margin-top: -100px;
+    }
+    .modal-welcome, .modal-players, .modal-dif{
+        margin-top: -500px;
+    }
+
+    #panel{
+        margin-top: -650px;
+    }
+
+    .win{
+        margin-top: -620px;
+    }
+}
+
+@media(max-width:400px){
+    .modal-welcome, .modal-players, .modal-dif{
+        width: 90%;
+        height: 250px;
+    }
+    .selection, .selection-players, .selection-dif{
+        width: 90%;
+        margin-right: 10px;
+        margin-left: 10px;
+    }
+
+    .win{
+        width: 95%;
+    }
+}
 
 .no-visible{
     display: none;
