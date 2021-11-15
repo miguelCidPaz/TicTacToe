@@ -104,7 +104,7 @@ class Player {
                     if (autoplay && !end) {
                         setTimeout(() => {
                             arrPlays = player.movementIA(arrPlays, height, width);
-                        }, 200);
+                        }, 100);
                     }
                 } else if (arrPlays[height][width] == 0) {
                     lastPlayer = player.getRivalSymbol();
@@ -256,13 +256,7 @@ class Player {
             }
         }
         if (check && !end) {
-            for (let i = 0; i < arrPlays.length; i++) {
-                for (let j = 0; j < arrPlays[i].length; j++) {
-                    arrPlays[i][j] = 0;
-                }
-            }
             game.newGame();
-            return arrPlays;
         }
         return arrPlays;
     }
