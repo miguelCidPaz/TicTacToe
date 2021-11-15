@@ -132,6 +132,9 @@ class Player {
         player.drawPlayer(actualPlayer, label);
         player.setTurn(turn)
         game.selectorDance(actualPlayer)
+        if (arrPlays[height][width] === 0) {
+            arrPlays[height][width] = actualPlayer;
+        }
         return arrPlays;
     }
 
@@ -161,6 +164,7 @@ class Player {
     randomMovement(arrPlays) {
         let condition = true;
         let height = 0, width = 0;
+        let count = 0;
         let cell = game.getBoardDivs();
         let IA = player.getRivalSymbol();
 
@@ -172,6 +176,11 @@ class Player {
                 height = randomHeight;
                 width = randomWidth;
                 arrPlays = player.movementPlayer(arrPlays, height, width, cell[height][width], IA, true);
+            }
+            count++;
+            if (count == 50) {
+                console.log('salimos');
+                condition = false
             }
         }
 
@@ -218,7 +227,7 @@ class Player {
                     if (arrPlays[i].includes(humanPlayer)) {
                         if (arrPlays[i + 1] !== undefined && arrPlays[i + 1].includes(humanPlayer)) {
                             let index = arrPlays[i + 1].indexOf(humanPlayer);
-                            if (arrPlays[i + 2] !== undefined && arrPlays[i + 2][index] == 0) {
+                            if (arrPlays[i + 2] !== undefined && arrPlays[i + 2][index] === 0) {
                                 console.log('movimiento medido vertical 1')
                                 condition = false; height = i + 2; width = index;
                                 arrPlays = player.movementPlayer(arrPlays, height, width, cell[height][width], IA, true);
@@ -255,9 +264,11 @@ class Player {
                 check = false;
             }
         }
+
         if (check && !end) {
             game.newGame();
         }
+
         return arrPlays;
     }
 
@@ -534,7 +545,9 @@ class Game {
         this.setBoards();
         player.setTurn(true);
         player.setEndGame(false);
-        panelPlay.classList.remove('no-visible');
+        if (panelPlay.classList.contains('no-visible')) {
+            panelPlay.classList.remove('no-visible');
+        }
     }
 
     /**
