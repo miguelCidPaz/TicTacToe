@@ -179,7 +179,6 @@ class Player {
             }
             count++;
             if (count == 50) {
-                console.log('salimos');
                 condition = false
             }
         }
@@ -213,7 +212,6 @@ class Player {
                         if (arrPlays[i][j] === humanPlayer) {
                             count++;
                             if (count == 2 && arrPlays[i][j + 1] === 0) {
-                                console.log('movimiento medido horizontal')
                                 condition = false; height = i; width = j + 1;
                                 arrPlays = player.movementPlayer(arrPlays, height, width, cell[height][width], IA, true);
                             }
@@ -228,7 +226,6 @@ class Player {
                         if (arrPlays[i + 1] !== undefined && arrPlays[i + 1].includes(humanPlayer)) {
                             let index = arrPlays[i + 1].indexOf(humanPlayer);
                             if (arrPlays[i + 2] !== undefined && arrPlays[i + 2][index] === 0) {
-                                console.log('movimiento medido vertical 1')
                                 condition = false; height = i + 2; width = index;
                                 arrPlays = player.movementPlayer(arrPlays, height, width, cell[height][width], IA, true);
                                 break;
@@ -241,7 +238,6 @@ class Player {
 
         //If after the two searches no movement is made, we make a random one
         if (condition) {
-            console.log('movimiento random')
             arrPlays = player.randomMovement(arrPlays);
         }
 
@@ -653,11 +649,9 @@ class Game {
         if (this.innerText == 'O') {
             player.setSymbol('O');
             player.setRivalSymbol('X');
-            console.log('seleccionada O')
         } else {
             player.setSymbol('X');
             player.setRivalSymbol('O');
-            console.log('seleccionada X')
         }
         nextPage(0);
     }
@@ -669,12 +663,10 @@ class Game {
         let father = this.parentElement;
         if (this.innerText == '1') {
             player.setAutopilot(true);
-            console.log('autopiloto activado')
             nextPage(1);
         } else {
             player.setAutopilot(false);
             father.parentElement.classList.add('no-visible')
-            console.log('autopiloto desactivado')
             game.newGame();
         }
     }
@@ -686,10 +678,8 @@ class Game {
         let father = this.parentElement;
         if (this.innerText === 'Easy') {
             player.setHard(false);
-            console.log('modo facil')
         } else {
             player.setHard(true);
-            console.log('modo dificil')
         }
         game.newGame();
         father.parentElement.classList.add('no-visible')
